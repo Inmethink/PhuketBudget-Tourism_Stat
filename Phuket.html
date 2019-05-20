@@ -10,6 +10,7 @@
             url2 = "https://docs.google.com/spreadsheets/d/1PJBZdEuZ-ssznKGe1TmP82nPHAI6B5F8u217gW53Dsw/gviz/tq?sheet=Tourism&headers=1&tq=";
             url3 = "https://docs.google.com/spreadsheets/d/1PJBZdEuZ-ssznKGe1TmP82nPHAI6B5F8u217gW53Dsw/gviz/tq?sheet=order2561&headers=1&tq=";
             url4 = "https://docs.google.com/spreadsheets/d/1PJBZdEuZ-ssznKGe1TmP82nPHAI6B5F8u217gW53Dsw/gviz/tq?sheet=TotalBudget&headers=1&tq=";
+            
             function drawChart() {
                 var sheetName = 'order2561'
                 var queryString = encodeURIComponent("select A,B");
@@ -25,6 +26,11 @@
                 var queryString = encodeURIComponent("select A,B");
                 var query = new google.visualization.Query( url + "/gviz/tq?sheet=" + sheetName + "&headers=1&tq=" + queryString );
                 query.send(handleAllBudgetLinearBarResponse);
+            
+                var sheetName = 'BudgetT'
+                var queryString = encodeURIComponent("select A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z");
+                var query = new google.visualization.Query( url + "/gviz/tq?sheet=" + sheetName + "&headers=1&tq=" + queryString );
+                query.send(handleBudgetPartLinearBarResponse);
             }
             
             function errorAlert(res) {
@@ -115,20 +121,63 @@
                 line_AllBudget.draw(data, options);
             }
 
+            function handleBudgetPartLinearBarResponse(response) {
+                if (response.isError()) {
+                    errorAlert(response);
+                    return;
+                }
+
+                var data = response.getDataTable();
+
+                var options = {
+                    title: "กราฟเส้นแสดงแนวโน้มงบประมาณของทุกภาคส่วนที่ได้รับในจังหวัดภูเก็ต ในปี 2547-2561",
+                    curveType: "function",
+                    legend: { position: "none" },
+                    hAxis: {
+                    format:'#',
+                    title: "ปี"
+                    },
+                    vAxis: {
+                    title: "จำนวนเงิน (บาท)"
+                    },
+                };
+                var line_BudgetPart = new google.visualization.LineChart(
+                    document.getElementById("line_BudgetPart_div")
+                );
+                line_BudgetPart.draw(data, options);
+            }
 
         </script>
     </head>
     <body>
+    <div>
         <h1 style="padding-left:40px; padding-top: 40px">ข้อมูลงบประมาณและการท่องเที่ยวจังหวัดภูเก็ต</h1>
         <h2 style="padding-left:40px;">ข้อมูลงบประมาณแต่ละภาคส่วนของจังหวัดภูเก็ตในปี 2561</h2>
         <div id="bar_2561_div" style="width: 900px; height: 500px;"></div>
         <h3 style="padding-left:40px;">ภาคส่วนที่ได้รับงบประมาณมากที่สุด คือ กระทรวงศึกษาธิการ
                 รองลงมาคือกระทรวงคมนาคม และกระทรวงมหาดไทย ตามลำดับ
         </h3>
+    </div>
     <br/>
+    <div>
+        <h2 style="padding-left:40px;">ข้อมูลงบประมาณแต่ละภาคส่วนจังหวัดในแต่ละปี ตั้งแต่ 2547-2560</h2>
+        <div id="line_BudgetPart_div" style="width: 900px; height: 500px;"></div>
+        <h3 style="padding-left:40px;">มีภาคส่วนที่ได้รับงบประมาณมากกว่าภาคส่วนอื่นในแต่ละปีอย่างเห็นได้ชัด คือ กระทรวงศึกษาธิการ
+                รองลงมาคือกระทรวงคมนาคม และกระทรวงมหาดไทย</h3>
+    </div>
+    <br/>
+    <div>
         <h2 style="padding-left:40px;">ข้อมูลรายได้จากนักท่องเที่ยวรวมที่มาเที่ยวที่จังหวัดภูเก็ต และงบประมาณรวมทั้งหมดในแต่ละปี</h2>
         <div id="line_Tourism_div" style="width: 900px; height: 500px;"></div>
         <div id="line_AllBudget_div" style="width: 900px; height: 500px;"></div>
         <h3 style="padding-left:40px;">รายได้จากนักท่องเที่ยว และงบประมาณรวมในจังหวัดภูเก็ต มีแนวโน้มเพิ่มขึ้น</h3>
+    </div>
+    <br/>
+    <div>
+        <h2>________________________________________________________________________________________________________________________________________________________</h2>
+        <h4 style="padding-left:40px;">ที่มา: งบประมาณจังหวัดภูเก็ตแต่ละภาคส่วน -> http://www.bb.go.th</h4>
+        <h4 style="padding-left:40px;">ที่มา: รายได้จากการท่องเที่ยวจังหวัดภูเก็ต -> https://www.mots.go.th/more_news.php?cid=411&filename=index , http://service.nso.go.th/nso/web/statseries/statseries23.html </h4>
+    </div>
+    <br/>
     </body>
 </html>
